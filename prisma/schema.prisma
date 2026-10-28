@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  admin
+  user
+}
+
+enum Categoria {
+  Guitarra
+  Bajo
+  Amplificador
+  Pedal
+  Accesorios
+}
+
+enum EstadoConsulta {
+  pendiente
+  atendida
+}
+
+model User {
+  id        Int        @id @default(autoincrement())
+  nombre    String
+  email     String     @unique
+  password  String // hash bcrypt, nunca texto plano
+  role      Role       @default(user)
+  createdAt DateTime   @default(now())
+  consultas Consulta[]
+}
+
+model Marca {
+  id           Int           @id @default(autoincrement())
+  nombre       String        @unique
+  ciudad       String
+  especialidad String
+  bio          String
+  foto         String
+  alt          String
+  instrumentos Instrumento[]
+}
+
+model Instrumento {
+  id          Int        @id @default(autoincrement())
+  nombre      String     @unique
+  categoria   Categoria
+  precio      Int // pesos colombianos (COP), sin decimales
+  descripcion String
+  foto        String
+  alt         String
+  marcaId     Int
+  marca       Marca      @relation(fields: [marcaId], references: [id])
+  createdAt   DateTime   @default(now())
+  consultas   Consulta[]
+
+  @@index([categoria])
+}
+
+// Interacción: lo que hacía el formulario de la Entrega 1 (consulta o solicitud sobre un instrumento)
+model Consulta {
+  id            Int            @id @default(autoincrement())
+  mensaje       String
+  estado        EstadoConsulta @default(pendiente)
+  createdAt     DateTime       @default(now())
+  userId        Int
+  user          User           @relation(fields: [userId], references: [id])
+  instrumentoId Int
+  instrumento   Instrumento    @relation(fields: [instrumentoId], references: [id])
+
+  @@index([userId])
+  @@index([instrumentoId])
+}
