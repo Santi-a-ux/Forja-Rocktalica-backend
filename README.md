@@ -117,12 +117,11 @@ El token lo guarda el frontend en `localStorage` con la clave `forja-token`; el 
 
 ### Si usaste IA, ¿para qué la usaste y qué tuviste que corregir?
 
-Usé Claude (asistente de IA de Anthropic) para generar el código base de la API: las cuatro capas, el esquema de Prisma, el seed, la autenticación con JWT y bcrypt, la validación con zod y las pruebas de los middlewares. Yo armé el repositorio, hice los commits, desplegué en Render y probé la API.
+Usé Claude para generar un poco la base de la API, el esquema de Prisma, la seed, la validación con zod y las pruebas de los middlewares. .
 
 **Lo que tuve que corregir o resolver:**
 1. **Migración:** `prisma migrate dev` falló contra la base gratuita de Render (`permission denied to terminate process`), porque necesita permisos de superusuario para su base de prueba. Generé la migración inicial con `prisma migrate diff`, la guardé en `prisma/migrations/` y la apliqué con `prisma migrate deploy`, que es el mismo comando del Build Command de Render. Luego corrí el seed desde mi computador.
-2. **Estructura de carpetas:** al copiar el proyecto del zip quedó dentro de una subcarpeta del repositorio. Lo moví a la raíz antes del primer commit.
-3. **CORS:** al conectar el frontend desplegado, el navegador bloqueó las peticiones. La causa era que abrí el sitio por una URL distinta a la configurada en `CORS_ORIGIN`; la API solo acepta el origen exacto, así que dejé `https://forja-rocktalica.vercel.app`.
+2. **CORS:** al conectar el frontend desplegado, el navegador bloqueó las peticiones. La causa era que abrí el sitio por una URL distinta a la configurada en `CORS_ORIGIN`; la API solo acepta el origen exacto, así que dejé `https://forja-rocktalica.vercel.app`.
 
 ## Captura de la pestaña Network
 
